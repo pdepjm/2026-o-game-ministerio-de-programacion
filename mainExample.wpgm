@@ -1,11 +1,12 @@
 import wollok.game.*
 
-import example.pepita
+//tablero 
+program laberinto {
+    game.width(15) //ancho
+    game.height(10) //alto
+    game.cellSize(50) //pixel por celda
+    game.title("Laberinto") 
 
-program PepitaGame {
-	game.title("Pepita")
-	game.height(10)
-	game.width(10)
-
-	game.start()
+    game.start()
 }
+
