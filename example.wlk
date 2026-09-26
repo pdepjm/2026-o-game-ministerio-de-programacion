@@ -31,3 +31,32 @@ object personaje {
   }
 }
 
+class Muro {
+    const posicion
+    method position() = posicion
+    method image() = "murojuego.png"
+}
+
+class Llave {
+    const posicion
+    method position() = posicion
+    method image() = "llave.png"
+}
+
+class Pocion {
+    const posicion
+    method position() = posicion
+    method image() = "pocion.png"
+}
+
+class TrampaVelocidad {
+    const posicion
+    method position() = posicion
+    method image() = "trampavelocidad.png"
+}
+
+class TrampaEnergia {
+    const posicion
+    method position() = posicion
+    method image() = "trampaenergia.png"
+}
