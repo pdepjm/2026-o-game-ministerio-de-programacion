@@ -60,3 +60,9 @@ class TrampaEnergia {
     method position() = posicion
     method image() = "trampaenergia.png"
 }
+
+class Pasillo {
+    const posicion
+    method position() = posicion
+   // method image() = "pasillo.png" FALTA IMAGEN DE PASILLO!
+}
