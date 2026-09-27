@@ -1,11 +1,38 @@
 import wollok.game.*
+import example.*
 
+program PepitaGame {
+	game.title("Pepita")
+	game.height(10)
+	game.width(10)
+
+	game.start()
+}
 //tablero 
 program laberinto {
     game.width(15) //ancho
     game.height(10) //alto
     game.cellSize(50) //pixel por celda
-    game.title("Laberinto") 
+    game.title("Laberinto")
+
+	
+	//matriz del nivel m=muro p=pasillo e=trampa.energia v=trampa.velocidad l=llave o=pocion
+	 const mapaNivel1 = [
+        ["P","P","P","M","M","M","M","M","M","M","M","M","M","M","P"],
+        ["P","M","P","P","M","P","P","P","V","M","M","M","M","P","P"],
+        ["P","M","M","M","M","P","M","M","M","M","M","M","M","P","M"],
+        ["P","M","M","M","P","P","P","P","P","P","P","P","P","L","M"],
+        ["P","M","M","M","M","M","M","P","M","M","M","M","M","P","M"],
+        ["P","M","P","P","P","P","P","P","M","M","M","P","P","P","M"],
+        ["P","M","P","M","M","P","M","M","M","P","M","M","M","P","M"],
+        ["M","E","P","M","M","P","P","M","M","P","P","M","P","P","M"],
+        ["M","M","P","M","M","M","M","M","M","M","M","M","M","O","M"],
+        ["P","P","P","P","P","P","P","P","P","P","P","P","P","P","M"]
+    ]
+
+	nivel.cargarMapa(mapaNivel1)
+	game.addVisual(personaje) 
+	//habria que agregar cuando pisa la llave y desaparece prox entrega
 
     game.start()
 }
