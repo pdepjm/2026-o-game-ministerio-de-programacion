@@ -8,8 +8,9 @@ program PepitaGame {
 
 	game.start()
 }
-//tablero 
+
 program laberinto {
+    //tablero
     game.width(15) //ancho
     game.height(10) //alto
     game.cellSize(50) //pixel por celda
@@ -33,6 +34,11 @@ program laberinto {
 	nivel.cargarMapa(mapaNivel1)
 	game.addVisual(personaje) 
 	//habria que agregar cuando pisa la llave y desaparece prox entrega
+
+    keyboard.up().onPressDo { personaje.irArriba() }
+    keyboard.down().onPressDo { personaje.irAbajo() }
+    keyboard.left().onPressDo { personaje.irIzquierda() }
+    keyboard.right().onPressDo { personaje.irDerecha() }
 
     game.start()
 }

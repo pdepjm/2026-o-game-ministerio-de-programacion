@@ -16,6 +16,8 @@ object personaje {
   var vida = 3
   var llave = false
 
+method energia() = energia
+
 //posicion del personaje
 method position() = position
 method position(nuevaPosition) {
@@ -29,6 +31,30 @@ method mover(nuevaPosition) {
 
 //imagen de personaje
 method image() = "personaje.png"
+
+//se fija si el personaje choca con un muro, si no choca se mueve a la nueva posicion
+method intentarMover(nuevaPosition) {
+  const objetosDestino = game.getObjectsIn(nuevaPosition)
+  const choca = objetosDestino.any({ obj => obj.esMuro() })
+    if (not choca) {
+      self.mover(nuevaPosition)
+    }
+}
+
+//metodos para mover al personaje en las 4 direcciones
+method irArriba() { 
+  self.intentarMover(position.up(1)) 
+  }
+method irAbajo() { 
+  self.intentarMover(position.down(1)) 
+  }
+method irIzquierda() {
+  self.intentarMover(position.left(1)) 
+  }
+method irDerecha() { 
+  self.intentarMover(position.right(1)) 
+  }
+
 
 method tieneLlave() = llave
 method agarrarLlave() { 
@@ -45,36 +71,42 @@ class Muro {
   const position
   method position() = position
   method image() = "muro1.png"
+  method esMuro() = true
 }
 
 class Llave {
   const position
   method position() = position
   method image() = "llave.png"
+  method esMuro() = false
 }
 
 class Pocion {
   const position
   method position() = position
   method image() = "pocion.png"
+  method esMuro() = false
 }
 
 class TrampaVelocidad {
   const position
   method position() = position
   method image() = "trampavelocidad.png"
+  method esMuro() = false
 }
 
 class TrampaEnergia {
   const position
   method position() = position
   method image() = "trampaenergia.png"
+  method esMuro() = false
 }
 
 class Pasillo {
   const position
   method position() = position
   method image() = "pasillo2.png"
+  method esMuro() = false
 }
 
 object nivel {
