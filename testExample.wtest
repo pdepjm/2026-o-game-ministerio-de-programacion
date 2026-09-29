@@ -8,9 +8,6 @@ describe "group of tests for pepita" {
 
 }
 
-import wollok.game.*
-import example.*
-
 describe "Tests de movimiento y colisiones del personaje" {
 test "El personaje rebota y no se mueve si hay un muro" {
 // creamos un muro y lo ponemos a propósito arriba del personaje
