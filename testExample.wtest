@@ -1,4 +1,4 @@
-import example.pepita
+import example.*
 
 describe "group of tests for pepita" {
 
@@ -6,4 +6,19 @@ describe "group of tests for pepita" {
     assert.equals(100, pepita.energy())
   }
 
+}
+
+describe "Tests de movimiento y colisiones del personaje" {
+test "El personaje rebota y no se mueve si hay un muro" {
+// creamos un muro y lo ponemos a propósito arriba del personaje
+  const pared = new Muro(position = game.at(0, 1))
+  game.addVisual(pared)
+        
+  // intentamos forzar el movimiento hacia el muro
+ personaje.irArriba()
+ // verificamos que la posición sigue intacta en el origen porque choco
+   assert.equals(game.at(0, 0), personaje.position())
+ // verificamos que no gasto energia en un paso que no dio
+ assert.equals(100, personaje.energia())
+    }
 }

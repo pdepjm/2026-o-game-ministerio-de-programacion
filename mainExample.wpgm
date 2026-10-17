@@ -1,11 +1,5 @@
 import wollok.game.*
-
-/*
-Clase estandar de todos los elementos del mapa, cualquier cosa con la que se tope el
-jugador hereda de ella 
-*/
-class ElementoMapa {
-  	var property position
+import example.*
 
  	method esObstaculo() = false  // Para la pared
 	method esSalida() = false	// Para la salida
@@ -118,3 +112,38 @@ program laberinto {
 
   game.start()
 }
+
+program laberinto {
+    //tablero
+    game.width(15) //ancho
+    game.height(10) //alto
+    game.cellSize(50) //pixel por celda
+    game.title("Laberinto")
+
+	
+	//matriz del nivel m=muro p=pasillo e=trampa.energia v=trampa.velocidad l=llave o=pocion
+	 const mapaNivel1 = [
+        ["P","P","P","M","M","M","M","M","M","M","M","M","M","M","P"],
+        ["P","M","P","P","M","P","P","P","V","M","M","M","M","P","P"],
+        ["P","M","M","M","M","P","M","M","M","M","M","M","M","P","M"],
+        ["P","M","M","M","P","P","P","P","P","P","P","P","P","L","M"],
+        ["P","M","M","M","M","M","M","P","M","M","M","M","M","P","M"],
+        ["P","M","P","P","P","P","P","P","M","M","M","P","P","P","M"],
+        ["P","M","P","M","M","P","M","M","M","P","M","M","M","P","M"],
+        ["M","E","P","M","M","P","P","M","M","P","P","M","P","P","M"],
+        ["M","M","P","M","M","M","M","M","M","M","M","M","M","O","M"],
+        ["P","P","P","P","P","P","P","P","P","P","P","P","P","P","M"]
+    ]
+
+	nivel.cargarMapa(mapaNivel1)
+	game.addVisual(personaje) 
+	//habria que agregar cuando pisa la llave y desaparece prox entrega
+
+    keyboard.up().onPressDo { personaje.irArriba() }
+    keyboard.down().onPressDo { personaje.irAbajo() }
+    keyboard.left().onPressDo { personaje.irIzquierda() }
+    keyboard.right().onPressDo { personaje.irDerecha() }
+
+    game.start()
+}
+
