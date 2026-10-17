@@ -2,6 +2,7 @@ import wollok.game.*
 
 object pepita {
   var energy = 100
+}
 
 // ---------- Superclase de los elementos del laberinto ----------
 class ElementoMapa {

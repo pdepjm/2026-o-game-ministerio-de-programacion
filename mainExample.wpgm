@@ -1,85 +1,6 @@
 import wollok.game.*
 import example.*
 
- 	method esObstaculo() = false  // Para la pared
-	method esSalida() = false	// Para la salida
-	  
-  	method efecto(personaje) { } // Permite aplicale efectos al personaje
-}
-
-// El muro basico del laberinto (Funciona)
-class Pared inherits ElementoMapa {
-	method image() = "wall.png"
-	override method esObstaculo() = true
-}
-
-// Salida a la que se debe llegar (Funciona a medias)
-class Salida inherits ElementoMapa {
-	method image() = "exit.png"
-	override method esSalida() = true
-
-	// Metodo para probrar, restaura atributos pero no consigo que ande el game.say()  
-	override method efecto(personaje) {
-		personaje.restaurarAtributos()
-	}
-}
-
-// El personaje del jugador con su movimiento base (Fuciona)
-object personaje {
-	var property position = game.origin() // Lo ubica en (0, 0)
-	
-	// Atributos iniciales
-	var property energia = 10
-	var property vida = 3
-
-	method image() = "character.png"
-
-	method moverse(dx, dy) {
-		// Consigue la posicion a la que se va a desplazar
-		const siguiente = game.at(position.x() + dx, position.y() + dy)
-
-		// Verifica que la posicion este dentro del mapa y no sea una pared
-		if (not self.hayObstaculoEn(siguiente) and self.estaDentroDelTablero(siguiente)){
-			// Si le queda energia se mueve
-			if (energia > 0){
-				// Cada vez que el jugador de desplaza gasta energia y se le aplica
-				// El efecto de lo que pise
-				position = siguiente
-				self.gastarEnergia(1)
-				self.interactuarConElementosDe(siguiente)
-			}
-		}
-	}	
-
-	// Metodo para modificar energia
-	method gastarEnergia(cantidad) {
-		energia = energia - cantidad
-	}	
-
-	// Metodo para restaurar atributos
-	method restaurarAtributos(){
-		energia = 10
-		vida = 3
-	}
-
-	// Verifica si el casillero siguiente es una pared
-	method hayObstaculoEn(pos) =
-		game.getObjectsIn(pos).any({ elemento => elemento.esObstaculo() })
-
-	// Se aplica el efecto del objeto con el que choque
-	method interactuarConElementosDe(pos) {
-	game.getObjectsIn(pos).forEach({ elemento => 
-		if (elemento != self) {
-		elemento.efecto(self)
-		}
-	})
-	}
-
-	// Verifica que el tile este dentro del mapa
-	method estaDentroDelTablero(pos) =
-  		pos.x() >= 0 and pos.x() < game.width() and pos.y() >= 0 and pos.y() < game.height()
-}
-
 program laberinto {
   game.width(15)
   game.height(10)
@@ -139,10 +60,10 @@ program laberinto {
 	game.addVisual(personaje) 
 	//habria que agregar cuando pisa la llave y desaparece prox entrega
 
-    keyboard.up().onPressDo { personaje.irArriba() }
-    keyboard.down().onPressDo { personaje.irAbajo() }
-    keyboard.left().onPressDo { personaje.irIzquierda() }
-    keyboard.right().onPressDo { personaje.irDerecha() }
+    keyboard.up().onPressDo { personaje.moverse(0, 1) }
+    keyboard.down().onPressDo { personaje.moverse(0, -1) }
+    keyboard.left().onPressDo { personaje.moverse(-1, 0) }
+    keyboard.right().onPressDo { personaje.moverse(1, 0) }
 
     game.start()
 }
