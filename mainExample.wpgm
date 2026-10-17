@@ -87,20 +87,34 @@ object personaje {
 }
 
 program laberinto {
-	
-	game.width(10)
-  	game.height(7)
+  game.width(15)
+  game.height(10)
+  game.cellSize(50)
+  game.title("Laberinto")
+  
 
-	game.addVisual(personaje)
-	game.addVisual(new Pared(position = game.at(2, 2)))
-	game.addVisual(new Pared(position = game.at(2, 3)))
-	game.addVisual(new Pared(position = game.at(2, 4)))
+  const mapaNivel1 = [
+    ["P","P","P","M","M","M","M","M","M","M","M","M","M","M","S"],
+    ["P","M","P","P","M","P","P","P","V","M","M","M","M","P","P"],
+    ["P","M","M","M","M","P","M","M","M","M","M","M","M","P","M"],
+    ["P","M","M","M","P","P","L","P","P","P","P","P","P","P","M"],
+    ["P","M","M","M","M","M","M","M","M","M","M","M","M","P","M"],
+    ["P","M","P","P","P","P","P","P","M","M","M","P","P","P","M"],
+    ["P","M","P","M","M","P","M","M","M","P","M","M","M","P","M"],
+    ["M","E","P","M","M","P","P","M","M","P","P","M","P","P","M"],
+    ["M","M","P","M","M","M","M","M","M","M","M","M","M","O","M"],
+    ["P","P","P","P","P","P","P","P","P","P","P","P","P","P","M"]
+  ]
 
-	// Setteo de las teclas de movimiento con el metodo moverse
-	keyboard.up().onPressDo({ personaje.moverse(0, 1) })
-	keyboard.down().onPressDo({ personaje.moverse(0, -1) })
-	keyboard.left().onPressDo({ personaje.moverse(-1, 0) })
-	keyboard.right().onPressDo({ personaje.moverse(1, 0) })
+  nivel.cargarMapa(mapaNivel1)
+  game.addVisual(personaje)
+  game.addVisual(textoEnergia)
+  game.addVisual(textoEstado)
 
-	game.start()
+  keyboard.up().onPressDo { personaje.moverse(0, 1) }
+  keyboard.down().onPressDo { personaje.moverse(0, -1) }
+  keyboard.left().onPressDo { personaje.moverse(-1, 0) }
+  keyboard.right().onPressDo { personaje.moverse(1, 0) }
+
+  game.start()
 }
