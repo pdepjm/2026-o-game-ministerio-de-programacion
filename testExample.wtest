@@ -1,24 +1,115 @@
+import wollok.game.*
 import example.*
 
-describe "group of tests for pepita" {
+describe "Laberinto" {
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  method initialize() {
+    game.width(10)
+    game.height(10)
+    personaje.reiniciar()
+    personaje.position(game.at(1, 1))
   }
 
-}
+  test "moverse gasta 2 de energía" {
+    personaje.moverse(1, 0)
+    assert.equals(game.at(2, 1), personaje.position())
+    assert.equals(98, personaje.energia())
+  }
 
-describe "Tests de movimiento y colisiones del personaje" {
-test "El personaje rebota y no se mueve si hay un muro" {
-// creamos un muro y lo ponemos a propósito arriba del personaje
-  const pared = new Muro(position = game.at(0, 1))
-  game.addVisual(pared)
-        
-  // intentamos forzar el movimiento hacia el muro
- personaje.irArriba()
- // verificamos que la posición sigue intacta en el origen porque choco
-   assert.equals(game.at(0, 0), personaje.position())
- // verificamos que no gasto energia en un paso que no dio
- assert.equals(100, personaje.energia())
-    }
+  test "un muro no deja pasar" {
+    game.addVisual(new Muro(position = game.at(2, 1)))
+    personaje.moverse(1, 0)
+    assert.equals(game.at(1, 1), personaje.position())
+  }
+
+  test "no se puede salir del tablero" {
+    personaje.position(game.at(0, 0))
+    personaje.moverse(-1, 0)
+    assert.equals(game.at(0, 0), personaje.position())
+  }
+
+  test "la poción recupera energía y desaparece" {
+    personaje.perderEnergia(50)
+    const pocion = new Pocion(position = game.at(2, 1))
+    game.addVisual(pocion)
+    personaje.moverse(1, 0)
+    assert.equals(68, personaje.energia())
+    assert.notThat(game.hasVisual(pocion))
+  }
+
+  test "la energía no supera 100" {
+    personaje.recuperarEnergia(50)
+    assert.equals(100, personaje.energia())
+  }
+
+  test "agarrar la llave" {
+    const llave = new Llave(position = game.at(2, 1))
+    game.addVisual(llave)
+    personaje.moverse(1, 0)
+    assert.that(personaje.tieneLlave())
+    assert.notThat(game.hasVisual(llave))
+  }
+
+  test "la trampa de energía resta 15" {
+    game.addVisual(new TrampaEnergia(position = game.at(2, 1)))
+    personaje.moverse(1, 0)
+    assert.equals(83, personaje.energia())
+  }
+
+  test "la trampa de velocidad saca una vida y vuelve al inicio" {
+    game.addVisual(new TrampaVelocidad(position = game.at(2, 1)))
+    personaje.moverse(1, 0)
+    assert.equals(2, personaje.vida())
+    assert.equals(game.at(0, 0), personaje.position())
+  }
+
+  test "la salida sin llave no gana" {
+    game.addVisual(new Salida(position = game.at(2, 1)))
+    personaje.moverse(1, 0)
+    assert.notThat(nivel.jugadorGano())
+  }
+
+  test "la salida con llave gana" {
+    personaje.agarrarLlave()
+    game.addVisual(new Salida(position = game.at(2, 1)))
+    personaje.moverse(1, 0)
+    assert.that(nivel.jugadorGano())
+  }
+
+  test "al perder las 3 vidas la vida queda en 0" {
+    3.times({ i => personaje.perderVida() })
+    assert.equals(0, personaje.vida())
+  }
+
+  test "el fantasma se mueve en horizontal" {
+    const fantasma = new Fantasma(position = game.at(5, 5))
+    fantasma.mover()
+    assert.equals(game.at(6, 5), fantasma.position())
+  }
+
+  test "el fantasma vertical se mueve hacia arriba" {
+    const fantasma = new FantasmaVertical(position = game.at(5, 5))
+    fantasma.mover()
+    assert.equals(game.at(5, 6), fantasma.position())
+  }
+
+  test "el fantasma cambia de sentido al chocar un muro" {
+    game.addVisual(new Muro(position = game.at(6, 5)))
+    const fantasma = new Fantasma(position = game.at(5, 5))
+    fantasma.mover()
+    fantasma.mover()
+    assert.equals(game.at(4, 5), fantasma.position())
+  }
+
+  test "si el fantasma toca al personaje le saca una vida" {
+    const fantasma = new Fantasma(position = game.at(0, 1))
+    fantasma.mover()
+    assert.equals(2, personaje.vida())
+  }
+
+  test "si el personaje pisa un fantasma pierde una vida" {
+    game.addVisual(new Fantasma(position = game.at(2, 1)))
+    personaje.moverse(1, 0)
+    assert.equals(2, personaje.vida())
+  }
 }
