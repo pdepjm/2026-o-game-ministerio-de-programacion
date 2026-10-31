@@ -1,12 +1,13 @@
 import wollok.game.*
 
 // ---------- Superclase de los elementos del laberinto ----------
-class ElementoMapa {
+ class ElementoMapa {
   const property position
 
-  method image()                      // abstracto: cada subclase pone su imagen
-  method esObstaculo() = false        // por defecto no bloquea
-  method efecto(personaje) { }        // por defecto no hace nada
+  method image()                      
+  method esObstaculo() = false        
+  method efecto(personaje) { }        
+  method z() = 0   // CAPA 0: El piso y los muros van bien al fondo
 }
 
 class Muro inherits ElementoMapa {
@@ -37,7 +38,7 @@ class Pocion inherits Consumible {
   override method image() = "pocion.png"
   override method efecto(personaje) {
     super(personaje)
-    personaje.recuperarEnergia(20)
+    personaje.recuperarEnergia(70)
   }
 }
 
@@ -45,14 +46,15 @@ class Pocion inherits Consumible {
 class TrampaEnergia inherits ElementoMapa {
   override method image() = "trampaenergia.png"
   override method efecto(personaje) {
-    personaje.perderEnergia(15)
+    personaje.perderEnergia(100)
   }
 }
 
-class TrampaVelocidad inherits ElementoMapa {
+class TrampaVelocidad inherits Consumible {
   override method image() = "trampavelocidad.png"
   override method efecto(personaje) {
-    personaje.perderVida()
+    super(personaje) // Llama al código del padre para que desaparezca visualmente
+    personaje.perderVida() // Luego aplica el daño
   }
 }
 
@@ -72,11 +74,12 @@ class Fantasma {
   var property position
   var sentido = 1
 
+  method z() = 2   // CAPA 2: El fantasma va por encima del mapa
+
   method image() = "character.png"
   method esObstaculo() = false
   method efecto(personaje) { personaje.perderVida() }
 
-  // por defecto se mueve en horizontal
   method siguientePosicion() = game.at(position.x() + sentido, position.y())
 
   method mover() {
@@ -93,7 +96,7 @@ class Fantasma {
 }
 
 class FantasmaVertical inherits Fantasma {
-  override method image() = "fantasma2.png"
+  override method image() = "character copy.png"
   override method siguientePosicion() = game.at(position.x(), position.y() + sentido)
 }
 
@@ -101,9 +104,11 @@ class FantasmaVertical inherits Fantasma {
 object personaje {
   const posicionInicial = game.at(0, 0)
   var position = posicionInicial
-  var energia = 100
+  var energia = 500
   var vida = 3
   var llave = false
+
+  method z() = 3   // CAPA 3: La protagonista arriba de todos
 
   method energia() = energia
   method vida() = vida
@@ -113,7 +118,7 @@ object personaje {
 
   method reiniciar() {
     position = posicionInicial
-    energia = 100
+    energia = 500
     vida = 3
     llave = false
   }
@@ -155,7 +160,7 @@ object personaje {
   method agarrarLlave() { llave = true }
 
   method recuperarEnergia(cantidad) {
-    energia = (energia + cantidad).min(100)
+    energia = (energia + cantidad).min(500)
   }
 
   method perderEnergia(cantidad) {
@@ -164,13 +169,10 @@ object personaje {
       juego.terminar("Game Over")
     }
   }
-
-  method perderVida() {
+method perderVida() {
     vida = (vida - 1).max(0)
     if (vida == 0) {
       juego.terminar("Game Over")
-    } else {
-      position = posicionInicial
     }
   }
 
@@ -199,18 +201,6 @@ object nivel {
   ]
   const property fantasmas = []
 
-  method cargarMapa(matriz) {
-    fantasmas.clear()
-    const alto = matriz.size()
-    (0 .. (alto - 1)).forEach({ filaIdx =>
-      const fila = matriz.get(filaIdx)
-      const y = alto - 1 - filaIdx;
-      (0 .. (fila.size() - 1)).forEach({ x =>
-        self.crearElemento(fila.get(x), game.at(x, y))
-      })
-    })
-  }
-
   method crearElemento(tipo, pos) {
     if (tipo == "M") {
       game.addVisual(new Muro(position = pos))
@@ -234,13 +224,30 @@ object nivel {
     }
   }
 
-  method agregarFantasma(fantasma) {
-    fantasmas.add(fantasma)
-    game.addVisual(fantasma)
-  }
 
   method moverFantasmas() {
     fantasmas.forEach({ f => f.mover() })
+  }
+
+  method cargarMapa(matriz) {
+    fantasmas.clear()
+    const alto = matriz.size()
+    (0 .. (alto - 1)).forEach({ filaIdx =>
+      const fila = matriz.get(filaIdx)
+      const y = (alto - 1) - (filaIdx)
+      (0 .. (fila.size() - 1)).forEach({ x =>
+        self.crearElemento(fila.get(x), game.at(x, y))
+      })
+    })
+    
+    // LA SOLUCIÓN: Una vez que todos los pasillos y muros ya se dibujaron,
+    // recién ahora agregamos los fantasmas visualmente para que queden arriba de todo.
+    fantasmas.forEach({ f => game.addVisual(f) })
+  }
+
+  method agregarFantasma(fantasma) {
+    // Solo lo guardamos en la lista, pero NO lo dibujamos todavía.
+    fantasmas.add(fantasma)
   }
 }
 
