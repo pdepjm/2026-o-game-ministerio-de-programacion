@@ -1,7 +1,5 @@
-import wollok.game.*
-import example.*
+import juego.*
 
 program laberinto {
   juego.iniciar()
 }
-
