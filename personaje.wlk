@@ -104,6 +104,8 @@ object personaje {
     vida = (vida - 1).max(0)
     if (vida == 0) {
       juego.terminar("Game Over: te quedaste sin vidas")
+    }else{
+      position = posicionInicial
     }
   }
 }

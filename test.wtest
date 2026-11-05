@@ -57,7 +57,7 @@ describe "Personaje y elementos" {
     assert.equals(100, personaje.energia())
   }
 
-  test "agarrar la llave" {
+  test "la llaves es recogida y desaparece" {
     const llave = new Llave(position = game.at(2, 1))
     game.addVisual(llave)
     personaje.moverse(1, 0)
@@ -118,7 +118,7 @@ describe "Fantasmas" {
     personaje.ubicarEnInicio(game.at(1, 1))
   }
 
-  test "el fantasma se mueve en horizontal" {
+  test "el fantasma horizontal se mueve en horizontal" {
     const fantasma = new Fantasma(position = game.at(5, 5))
     fantasma.mover()
     assert.equals(game.at(6, 5), fantasma.position())
