@@ -20,26 +20,26 @@ describe "Personaje y elementos" {
   }
 
   test "moverse gasta 2 de energía" {
-    personaje.moverse(1, 0)
+    personaje.moverse(new Derecha())
     assert.equals(game.at(2, 1), personaje.position())
     assert.equals(98, personaje.energia())
   }
 
   test "un muro no deja pasar" {
     game.addVisual(new Muro(position = game.at(2, 1)))
-    personaje.moverse(1, 0)
+    personaje.moverse(new Derecha())
     assert.equals(game.at(1, 1), personaje.position())
   }
 
   test "no se puede salir del tablero" {
     personaje.ubicarEnInicio(game.at(0, 0))
-    personaje.moverse(-1, 0)
+    personaje.moverse(new Izquierda())
     assert.equals(game.at(0, 0), personaje.position())
   }
 
   test "no se puede entrar a la fila del texto" {
     personaje.ubicarEnInicio(game.at(1, tablero.alto() - 1))
-    personaje.moverse(0, 1)
+    personaje.moverse(new Arriba())
     assert.equals(game.at(1, tablero.alto() - 1), personaje.position())
   }
 
@@ -47,7 +47,7 @@ describe "Personaje y elementos" {
     personaje.perderEnergia(50)
     const pocion = new Pocion(position = game.at(2, 1))
     game.addVisual(pocion)
-    personaje.moverse(1, 0)
+    personaje.moverse(new Derecha())
     assert.equals(68, personaje.energia())
     assert.notThat(game.hasVisual(pocion))
   }
@@ -60,34 +60,34 @@ describe "Personaje y elementos" {
   test "la llaves es recogida y desaparece" {
     const llave = new Llave(position = game.at(2, 1))
     game.addVisual(llave)
-    personaje.moverse(1, 0)
+    personaje.moverse(new Derecha())
     assert.that(personaje.tieneLlave())
     assert.notThat(game.hasVisual(llave))
   }
 
   test "la trampa de energía resta 15" {
     game.addVisual(new TrampaEnergia(position = game.at(2, 1)))
-    personaje.moverse(1, 0)
+    personaje.moverse(new Derecha())
     assert.equals(83, personaje.energia())
   }
 
   test "la trampa de velocidad hace que cada paso cueste 4" {
     game.addVisual(new TrampaVelocidad(position = game.at(2, 1)))
-    personaje.moverse(1, 0)       // pisa la trampa: -2
-    personaje.moverse(1, 0)       // ya está lento: -4
+    personaje.moverse(new Derecha())       // pisa la trampa: -2
+    personaje.moverse(new Derecha())       // ya está lento: -4
     assert.equals(94, personaje.energia())
   }
 
   test "después de 5 pasos lentos vuelve a caminar normal" {
     personaje.ralentizar()
-    5.times({ i => personaje.moverse(1, 0) })
+    5.times({ i => personaje.moverse(new Derecha()) })
     assert.equals(80, personaje.energia())
     assert.equals(pasoNormal, personaje.paso())
   }
 
   test "los pinches sacan una vida y vuelven al inicio" {
     game.addVisual(new Pinches(position = game.at(2, 1)))
-    personaje.moverse(1, 0)
+    personaje.moverse(new Derecha())
     assert.equals(2, personaje.vida())
     assert.equals(game.at(1, 1), personaje.position())
   }
@@ -146,7 +146,7 @@ describe "Fantasmas" {
 
   test "si el personaje pisa un fantasma pierde una vida" {
     game.addVisual(new Fantasma(position = game.at(2, 1)))
-    personaje.moverse(1, 0)
+    personaje.moverse(new Derecha())
     assert.equals(2, personaje.vida())
   }
 }

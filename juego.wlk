@@ -34,10 +34,10 @@ object juego {
   }
 
   method configurarTeclado() {
-    keyboard.up().onPressDo({ personaje.moverse(0, 1) })
-    keyboard.down().onPressDo({ personaje.moverse(0, -1) })
-    keyboard.left().onPressDo({ personaje.moverse(-1, 0) })
-    keyboard.right().onPressDo({ personaje.moverse(1, 0) })
+    keyboard.up().onPressDo({ personaje.moverse(new Arriba()) })
+    keyboard.down().onPressDo({ personaje.moverse(new Abajo()) })
+    keyboard.left().onPressDo({ personaje.moverse(new Izquierda()) })
+    keyboard.right().onPressDo({ personaje.moverse(new Derecha()) })
 
     game.onTick(500, "fantasmas", { nivelActual.moverFantasmas() })
   }
