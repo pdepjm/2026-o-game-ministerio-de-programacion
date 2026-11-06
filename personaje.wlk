@@ -59,8 +59,8 @@ object personaje {
   }
 
   // ---------- Movimiento ----------
-  method moverse(direccion) {
-    const siguiente = direccion.siguiente(position)
+  method moverse(dx, dy) {
+    const siguiente = game.at(position.x() + dx, position.y() + dy)
     if (tablero.puedeIrA(siguiente)) {
       self.mover(siguiente)
       self.interactuarConElementosDe(position)
@@ -108,29 +108,4 @@ object personaje {
       position = posicionInicial
     }
   }
-}
-
-class Direccion {
-  method dx() = 0
-  method dy() = 0
-
-  method siguiente(posicion){
-    return game.at(posicion.x() + self.dx(), posicion.y() + self.dy())
-  }
-}
-
-class Arriba inherits Direccion {
-  override method dy() = 1
-}
-
-class Abajo inherits Direccion {
-  override method dy() = -1
-}
-
-class Izquierda inherits Direccion {
-  override method dx() = -1
-}
-
-class Derecha inherits Direccion {
-  override method dx() = 1
 }
